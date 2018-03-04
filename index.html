@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Promesas que se perderán en estas cuatro paredes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="./trabe-slide-pack.css">
+    <style type="text/css">
+      body {
+        height: 100vw;
+        overflow: hidden;
+      }
+
+      section img {
+        max-height: 90vh;
+        max-width: 90vw;
+      }
+
+      .animation img {
+        height: 90vh;
+      }
+
+      .full-image img {
+        opacity: 1;
+      }
+
+      .full-image h2 {
+        background: #000;
+        opacity: 0.8;
+        padding: 20px;
+        margin-top: 14rem;
+      }
+
+      .full-image-up h2 {
+        margin-top: -14rem !important;
+      }
+
+      .know, .understand {
+        position: relative;
+      }
+
+      .know:before, .understand:before {
+        z-index: 1;
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        font-size: 4rem;
+        line-height: 4rem;
+      }
+
+      .know:before {
+        content: "🤓";
+      }
+
+      .understand:before {
+        content: "🤯";
+      }
+
+      .trabe-red a,
+      .trabe-green a {
+        color: #fff;
+      }
+
+      a:after {
+        content: "👀";
+        margin-left: 0.5rem;
+        font-size: 80%;
+      }
+
+      nav a:after,
+      .who a:after {
+        display: none;
+      }
+
+      blockquote strong {
+        color: #ff3333;
+        font-weight: normal;
+      }
+
+      .quote cite {
+        color: #eee;
+      }
+
+    </style>
+  </head>
+  <body>
+
+<textarea data-slide-pack>
+
+-- trabe
+
+# Async Javascript
+
+-- trabe who
+
+<div class="trabe-info">
+![](assets/trabe-logo.png)
+<br/>
+<small>https://trabe.io</small>
+<br/>
+<small>@trabe</small>
+</div>
+
+<div class="trabe-people">
+<h1>David Barral</h1>
+<small>david@trabe.io</small>
+<br/>
+<small>@davidbarral</small>
+</div>
+
+--
+
+# Today dishes
+
+## The event loop
+## Promises
+## Async functions
+
+-- trabe-green
+
+# The event loop
+
+--
+
+Let's borrow from
+[How JavaScript works: Event loop and the rise of Async programming + 5 ways to better coding with async/await](https://blog.sessionstack.com/how-javascript-works-event-loop-and-the-rise-of-async-programming-5-ways-to-better-coding-with-2f077c4438b5) by Alexander Zlatkov
+
+```javascript
+console.log('Hi');
+
+setTimeout(function cb1() { 
+  console.log('cb1');
+}, 5000);
+
+console.log('Bye');
+```
+
+-- animation
+
+![](assets/browser_event_loop_1.png)
+
+-- animation
+
+![](assets/browser_event_loop_2.png)
+
+-- animation
+
+![](assets/browser_event_loop_3.png)
+
+-- animation
+
+![](assets/browser_event_loop_4.png)
+
+-- animation
+
+![](assets/browser_event_loop_5.png)
+
+-- animation
+
+![](assets/browser_event_loop_6.png)
+
+-- animation
+
+![](assets/browser_event_loop_7.png)
+
+-- animation
+
+![](assets/browser_event_loop_8.png)
+
+-- animation
+
+![](assets/browser_event_loop_9.png)
+
+-- animation
+
+![](assets/browser_event_loop_10.png)
+
+-- animation
+
+![](assets/browser_event_loop_11.png)
+
+-- animation
+
+![](assets/browser_event_loop_12.png)
+
+-- animation
+
+![](assets/browser_event_loop_13.png)
+
+-- animation
+
+![](assets/browser_event_loop_14.png)
+
+-- animation
+
+![](assets/browser_event_loop_15.png)
+
+-- animation
+
+![](assets/browser_event_loop_16.png)
+
+-- animation
+
+![](assets/browser_event_loop_recap.gif)
+
+--
+
+![](assets/crash.jpg)
+
+--
+
+Let's borrow from [What you should know to really understand the Node.js Event Loop](https://medium.com/the-node-js-collection/what-you-should-know-to-really-understand-the-node-js-event-loop-and-its-metrics-c4907b19da4c) by Daniel Khan
+
+--
+
+![](assets/node_event_loop.png)
+
+--
+
+![](assets/eventloop-recap.png)
+
+--
+
+# To sum up
+
+## The JS engine runs chunks of code
+## It uses one thread
+## The event loop says what runs next
+
+--
+
+<video preload="auto" autoplay="autoplay" muted="muted" loop="loop" webkit-playsinline="" style="width: 90vw">
+  <source src="//i.imgur.com/mV9bFz7.mp4" type="video/mp4">
+</video>
+
+-- trabe-green
+
+# The callback hell
+<p style="font-size: 4rem">😱</p>
+
+-- full-image
+
+![](assets/moises.jpg)
+
+## In the beginning<br/>there was the callback
+
+-- code
+
+```javascript
+doAsyncStuff(function(value) {
+  // Do something with the value
+});
+
+document.addEventListener("click", function(event) {
+  // React to the click!
+});
+```
+
+-- code
+
+# Node.js loves callbacks! 😥
+
+```javascript
+import fs from "fs";
+
+fs.readFile("file.txt", function(err, data) {
+  if (err) {
+    throw err;
+  }
+  console.log(data);
+});
+
+```
+
+-- code
+
+# Sequential execution
+
+```javascript
+import fs from "fs";
+
+fs.readFile("file1.txt", function(err, data1) {
+  if (err) {
+    throw err;
+  }
+  fs.readFile("file2.txt", function(err, data2) {
+    if (err) {
+      throw err;
+    }
+    console.log(data1, data2);
+  });
+});
+
+```
+
+-- code
+
+# Parallel execution
+
+```javascript
+var data = [];
+
+function doTheTrick() {
+  if (data[0] && data[1]) {
+    console.log(data[0], data[1]);
+  }
+};
+
+fs.readFile("file1.txt", function(err, data) {
+  if (err) { throw err; }
+  data[0] = data;
+  doTheTrick();
+}
+
+fs.readFile("file2.txt", function(err, data) {
+  if (err) { throw err; }
+  data[1] = data;
+  doTheTrick();
+});
+
+```
+
+-- full-image full-image-up
+
+![](assets/wtf.gif)
+
+## What the fuck is that?
+
+-- full-image
+
+![](assets/super-dog.gif)
+
+## Promises to the rescue!
+
+-- quote
+
+> In computer science, future, **promise**, delay, and deferred refer to constructs used for synchronizing program execution in some concurrent programming languages. They describe an object that acts as a **proxy for a result** that is initially unknown, usually because the **computation of its value is yet incomplete**.
+<cite>Wikipedia - Futures and promises</cite>
+
+--
+
+# Libraries
+
+* [JQuery](https://api.jquery.com/category/deferred-object/)
+* [Q](http://documentup.com/kriskowal/q/)
+* [Bluebird](http://bluebirdjs.com/docs/getting-started.html)
+* ...
+
+-- code
+
+# A jQuery promise
+
+```javascript
+function delayedIsEven(n, t) {
+  var d = $.Deferred();
+  setTimeout(() => n % 2 ? d.reject(n) : d.resolve(n),  t);
+  return d.promise();
+}
+
+delayedIsEven(5)
+  .then(function(n) {
+      console.log(n, " is even");
+  })
+  .fail(function(n) {
+      console.log(n, " is odd");
+  });
+```
+
+-- trabe-green
+
+# Promises ES2015
+
+[MDN: Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+-- trabe-red
+
+# Beware!
+
+## ES2015 code 😎 Babel FTW!
+## Know 🤓 vs Understand 🤯
+## Happy path, no sanity checks
+## Just simple functions
+
+http://bit.ly/2tir6tZ
+
+--
+
+# The theory
+
+<img src="assets/promises.png" style="width: 80vw" />
+
+--
+
+## Async execution
+## Can be: pending or fullfilled
+## Fullfilled via resolve or reject
+## Fullfilled with a value
+
+-- code know
+
+# Async execution
+
+``` javascript
+new Promise(() => {
+  // Do some async stuff
+});
+```
+
+-- code understand
+
+# Async execution
+
+```javascript
+function Promise(fn) {
+  setImmediate(fn);
+}
+```
+
+-- code know
+
+# resolve/reject
+
+```javascript
+new Promise((resolve, reject) => {
+  // Do stuff
+  // ...
+  if (ok) {
+    resolve(value);
+  } else {
+    reject(reason);
+  }
+});
+```
+
+-- code small understand
+
+# resolve/reject
+
+```javascript
+function Promise(fn) {
+  let status = "PENDING";
+  let value;
+
+  const fullfill = newStatus => newValue => {
+    status = newStatus;
+    value = newValue;
+  };
+
+  const resolve = fullfill("RESOLVED");
+  const reject = fullfill("REJECTED");
+
+  setImmediate(() => {
+    try {
+      fn(resolve, reject);
+    } catch(e) {
+      reject(e);
+    }
+  });
+
+  return { status, value };
+};
+```
+
+--
+
+## then: handle resolve
+## catch: handle reject
+
+-- code know
+# then/catch
+
+```javascript
+const p1 = new Promise(resolve => resolve("OK"));
+p1.then(v => console.log(v)); // OK
+p1.then(console.log); // OK
+
+p2 = new Promise((resolve, reject) => reject("KO"));
+p2.then(() => { /* nope */ });
+p2.catch(v => console.log(v)); // KO
+p2.catch(console.log); // KO
+```
+
+-- code understand
+
+# then/catch
+
+```javascript
+function Promise(fn) {
+  let status = "PENDING";
+  let value;
+  let handlers = [];
+
+  const onFullfill = handler => {
+    if (status === "PENDING") {
+      handlers.push(handler);
+    } else {
+      handler(status, value);
+    }
+  }
+
+  const fullfill = newStatus => newValue => {
+    status = newStatus;
+    value = newValue;
+    handlers.forEach(handler => handler(status, value));
+  };
+```
+
+-- code understand
+
+```javascript
+  const resolve = fullfill("RESOLVED");
+  const reject = fullfill("REJECTED");
+
+  setImmediate(() => {
+    try {
+      fn(resolve, reject);
+    } catch(e) {
+      reject(e);
+    }
+  });
+```
+
+-- code understand
+
+```javascript
+  return {
+    then(handler) {
+      onFullfill((status, value) => {
+        if (status === "RESOLVED") {
+          handler(value);
+        }
+      });
+    },
+
+    catch(handler) {
+      onFullfill((status, value) => {
+        if (status === "REJECTED") {
+          handler(value);
+        }
+      });
+    },
+  };
+};
+```
+
+--
+
+# To be honest
+
+* `then` receives both `then` and `catch` callbacks
+
+```javascript
+new Promise(() => {}).then(
+  () => console.log("ok"),
+  () => console.log("ko"),
+);
+// same as new Promise(...).then(...).catch(...)
+```
+
+* Skipped for the sake of simplicity
+
+--
+
+## Fullfill value is always a promise
+## Chaining
+## Rejection flows till catch
+## Thenables
+
+-- code know small
+
+# Promise chaining
+
+```javascript
+new Promise(resolve => resolve(2))
+  .then(v => v * 3)
+  .then(v => v + 4)
+  .then(console.log); // 10
+
+new Promise((_, reject) => reject(2))
+  .then(v => v * 3)
+  .then(v => v * 4)
+  .catch(v => v + 4)
+  .then(console.log);  // 6
+
+new Promise(resolve => resolve(2))
+  .then(v => v * 3))
+  .then(v => new Promise(resolve => resolve(v + 4)))
+  .then(v => v * 2)
+  .then(console.log); // 20
+
+new Promise(resolve => resolve(2))
+  .then(v => v * 3))
+  .then(v => new Promise(resolve => resolve(v + 4))
+    .then(v => v * 2)
+  )
+  .then(console.log); // 20
+```
+
+-- code understand
+
+# Promise chaining
+
+```javascript
+then(handler) {
+  return new Promise((resolve, reject) => {
+    onFullfill((status, value) => {
+      if (status === "REJECTED") {
+        reject(value);
+        return;
+      }
+      try {
+        const res = handler(value);
+        if (res && res.then) {
+          res.then(resolve).catch(reject);
+        } else {
+          resolve(res);
+        }
+      } catch(e) {
+        reject(e);
+      }
+    });
+  });
+}
+```
+
+-- code understand
+
+# Promise chaining
+
+```javascript
+catch(handler) {
+  return new Promise((resolve, reject) => {
+    onFullfill((status, value) => {
+      if (status === "RESOLVED") {
+        resolve(value);
+        return;
+      }
+      try {
+        const res = handler(value);
+        if (res && res.then) {
+          res.then(resolve).catch(reject);
+        } else {
+          resolve(res);
+        }
+      } catch(e) {
+        reject(e);
+      }
+    });
+  });
+}
+```
+
+-- full-image
+
+![](assets/mind-blown.gif)
+
+## Mind blowing!
+
+--
+
+# Promise goodies
+
+## Create a resolved promise
+## Create a rejected promise
+## Run promises in parallel
+## Promise race
+
+-- code know
+
+# resolve/reject
+
+```javascript
+Promise.resolve("resolved")
+  .then(console.log); // resolved
+
+Promise.reject("rejected")
+  .catch(console.log); // rejected
+
+// Useful as null object!
+const fetchData = () =>
+  loggedUser
+    ? fetchPromise()
+    : Promise.resolve({});
+
+fetchData.then(/* .. */);
+```
+
+-- code understand
+
+# resolve/reject
+
+```javascript
+Promise.resolve = v => new Promise(resolve => resolve(v));
+
+Promise.reject = v => new Promise((_, reject) => reject(v));
+```
+
+-- code know
+
+# all
+
+``` javascript
+Promise.all([
+  Promise.resolve(1),
+  Promise.resolve(2),
+]).then(console.log); // [1,2]
+
+Promise.all([
+  Promise.resolve(1),
+  Promise.reject("rejected"),
+]).catch(console.log); // "rejected"
+```
+
+-- code understand
+
+# all
+
+```javascript
+Promise.all = promises => new Promise((resolve, reject) => {
+  let resolved = 0;
+  const values = Array(promises.length).fill(undefined);
+
+  promises.forEach((promise, i) => {
+    promise
+      .then(value => {
+        values[i] = value;
+        resolved++;
+        if (resolved === values.length) {
+          resolve(values);
+        }
+      })
+      .catch(e => reject(e));
+  });
+});
+
+```
+
+-- code know
+
+# race
+
+```javascript
+Promise.race([
+  Promise.resolve("resolved 1"),
+  Promise.resolve("resolved 2"),
+]).then(console.log); // resolved 1
+
+Promise.race([
+  Promise.resolve("resolved 1"),
+  Promise.reject("rejected"),
+]).then(console.log); // resolved 1
+
+Promise.race([
+  Promise.reject("rejected"),
+  Promise.resolve("resolved 1"),
+]).catch(console.log); // rejected
+```
+
+-- code understand
+
+# race
+
+```javascript
+Promise.race = (promises) => new Promise((resolve, reject) => {
+  let resolved = false;
+  promises.forEach((promise, i) => {
+    promise
+      .then(v => {
+        if (resolved) {
+          return;
+        }
+        resolved = true;
+        resolve(v);
+      })
+      .catch(e => {
+        if (!resolved) {
+          reject(e)
+        }
+      });
+  });
+});
+```
+
+-- trabe-red
+
+# Beware!
+## The unhandled promise rejection
+
+--
+
+# From callbacks to promises
+## promisify
+
+[Understanding Node’s promisify and callbackify](https://medium.com/trabe/understanding-nodes-promisify-and-callbackify-d2b04efde0e0)
+
+-- code know
+
+# promisify
+
+```
+import fs from "fs";
+import { promisify } from "util";
+
+const read = promisify(fs.readFile);
+
+read("myfile.txt").then(console.log);
+
+read("myfile1.txt")
+  .then(data1 =>
+    read("myfile2.txt")
+      .then(data2 => [data1,data2])
+  )
+  .then(data => console.log(...data));
+
+Promise.all([
+  read("myfile2.txt"),
+  read("myfile2.txt"),
+]).then(console.log)
+```
+
+-- code understand
+
+# promisify
+
+```javascript
+const promisify = fn =>
+  (...args) => new Promise((resolve, reject) => {
+    fn(...args, (error, value) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(value);
+      }
+    });
+  });
+```
+
+--
+
+# From promises to callbacks
+## callbackify 😆
+
+-- code understand
+
+# callbackify
+
+```javascript
+const callbackify = fn => (...args) => {
+  const callback = args[args.length - 1];
+  const fnArgs = args.slice(0, -1);
+  fn(...fnArgs)
+    .then(value => {
+      callback(undefined, value);
+    })
+    .catch(error => {
+      callback(error);
+    });
+};
+```
+
+-- trabe
+
+# async functions
+
+-- full-image
+
+![](assets/kid.gif)
+
+## The new cool kid in town
+
+--
+
+## `async`/`await`
+## Syntactic sugar
+## ES2017
+## [MDN Async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+
+-- code
+
+# Syntactic sugar
+
+```javascript
+// promise version
+const f => () =>
+  new Promise(() => {/* .. */})
+    .then(v => console.log(v))
+    .catch(err => console.err(err));
+
+// async version
+const f = async () => {
+  try {
+    const v = await new Promise(() => {/* .. */});
+    console.log(v);
+  } catch (err) {
+    console.error(err);
+  }
+}
+```
+
+-- code
+
+# async keyword
+
+```javascript
+const f = async () => {};
+
+const f = async function() {};
+
+async function f() {};
+
+class A {
+  async m() { }
+}
+```
+
+-- code
+
+# async function always returns a promise
+
+```javascript
+f()
+  .then(v => console.log(v))
+  .catch(e => console.error(e));
+
+new A().m().then(/* ... */);
+```
+
+-- code
+
+# Top level async: IIFE
+
+```javascript
+(async () => {
+  const v = await f();
+  console.log(v);
+})();
+
+```
+
+-- code
+
+# sequential execution
+
+```javascript
+const f = async () => {
+  const p1 = await Promise(() => {/* .. */);
+  const p2 = await Promise(() => {/* .. */);
+};
+```
+
+-- code
+
+# parallel execution
+
+```
+const f = async() => {
+  const p1 = new Promise(() => {/* .. */);
+  const p2 = new Promise(() => {/* .. */);
+
+  await p1;
+  await p2;
+
+  // vs.
+  // await Promise.all([p1, p2]);
+};
+
+```
+
+--- code
+
+# From promises to async/await
+
+``` javascript
+import fs from "fs";
+import { promisify } from "util";
+
+const read = promisify(fs.readFile);
+
+(async () => {
+  console.log(await read("myfile.txt"));
+
+  const data1 = await read("myfile1.txt");
+  const data2 = await read("myfile2.txt");
+  console.log(data1, data2);
+
+  console.log(...await Promise.all([
+    read("myfile1.txt"),
+    read("myfile2.txt"),
+  ]));
+})();
+```
+
+--
+
+# There is much more
+
+## Generators
+## `async` generators
+## `for await`
+
+-- trabe-black
+
+#  Questions?
+
+<p style="font-size: 4rem">🤔</p>
+
+
+-- full-image
+
+![](assets/bye.gif)
+
+## Thank you!
+
+
+</textarea>
+    <!-- SlidePack markdown compilation & UI goodies -->
+    <script src="./slide-pack.js"></script>
+  </body>
+</html>
